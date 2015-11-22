@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="videoApp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Video Player</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/darkly.css">
+    <link rel="stylesheet" href="video-player.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-animate.min.js"></script>
+</head>
+<body ng-controller="VideoController as video">
+
+<div id="fullPlayer" class="unselectable ng-cloak" 
+    ng-mousemove = "video.mouseMoving($event)" 
+    ng-mouseup = "video.dragStop($event)"
+>
+
+<div class="embed-responsive embed-responsive-16by9">
+       <video id="VideoElement" width="100%" height="100%" src="{{video.videoSource}}" ng-click="video.startPlayback()"
+        ></video>
+
+        <div id="bigPlayButton" class="well" ng-hide=" video.playerStatus == 'play' " ng-click="video.startPlayback()" style="margin-top:{{video.vidHeightCenter}}px;margin-left:{{video.vidWidthCenter}}px;"><span class="glyphicon glyphicon-play"></span></div>
+        <div id="videoTitle"  ng-hide=" video.playerStatus == 'play' ">{{video.titleDisplay}}</div>
+        <div id="VideoOptions" class="panel panel-default" ng-show="video.showOptions">
+                <div class="panel-heading">
+                    <h1 class="panel-title">{{titleDisplay}}</h1>
+                </div>
+                <div class="panel-body">
+                    <div class="col-xs-6">
+                        <h2>Video Details:</h2>                        
+
+                        <p><em>Title: {{ video.title }}</em></p>
+                        <p><em>Description: {{ video.description }}</em></p>
+                        <p><em>Duration: {{totalTime | time}}</em></p>
+                        
+                    </div>
+                    <div class="col-xs-6">
+                        <ul class="list-group" ng-model="video.playlist">
+                            <h2>Playlist:</h2>
+                            <li class="list-group-item" 
+                                ng-repeat="vid in video.playlist" 
+                                ng-click="video.videoSelected($index)">
+                                {{vid.title}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+</div>
+
+<div id="progressMeterFull"
+ng-click="video.videoSeek($event)">
+    <div id="progressMeter" style="width:{{ video.scrubLeft+7  }}px"></div>
+</div>
+<div id="thumbScrubber" style="top: {{video.scrubTop}}px; left: {{video.scrubLeft -1}}px" 
+    ng-mousedown="video.dragStart($event)"></div>
+<div id="playerToolBar">
+
+    <div class="play_pause-wrap" ng-switch on="video.playerStatus">
+
+        <div id="playbtn" class="btn btn-default" ng-switch-when="pause" ng-click="video.play()"><span class="glyphicon glyphicon-play"></span></div>
+        <div id="playbtn" class="btn btn-default" ng-switch-when="play" ng-click="video.pause()"><span class="glyphicon glyphicon-pause"></span></div>
+            
+    <div id="playbtn" class="btn btn-default" ng-click="video.stop()"><span class="glyphicon glyphicon-stop"></span></div>
+    </div>
+
+    <div class="vol-wrap" ng-switch on="video.volumeStatus">
+       <div id="mutebtn" class="btn btn-default" ng-switch-when="up" ng-click="video.toggleVolume()"><span class="glyphicon glyphicon-volume-up"></span></div>
+        <div id="mutebtn" class="btn btn-default" ng-switch-when="off" ng-click="video.toggleVolume()"><span class="glyphicon glyphicon-volume-off"></span></div> 
+    </div>
+    
+
+    <div id="videoTime">{{video.currentTime |  time }} / {{video.totalTime |  time }}</div>
+    <div id="rightStack">
+         <a id="fsBtn" ng-click="video.toggleFullscreen()" class="btn btn-default pull-right"><span class="glyphicon glyphicon-fullscreen"></span></a>
+        <a id="detailsBtn" ng-click="video.toggleDetails()" class="btn btn-default pull-right"><span class="glyphicon glyphicon-option-horizontal"></span></a>
+    </div>
+   
+
+    </div>
+</div>
+
+    
+    <script src="video-app.js"></script>
+</body>
+</html>
